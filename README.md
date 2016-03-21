@@ -1,4 +1,4 @@
-![RIBB@TACKING Bruce Lee art project](http://zeropage.io/wp-content/uploads/bruce-lee-voxel-on-wall-1-150x150.jpg){:style="float: right;margin-right: 7px;margin-top: 7px;"}
+![RIBB@TACKING Bruce Lee art project](http://zeropage.io/wp-content/uploads/bruce-lee-voxel-on-wall-1-150x150.jpg){:style="float:right;"}
 
 # RIBB@tacking-Bruce-Lee
 RIBB@TACKING Bruce Lee – a C64 game tribute and Bruce Lee homage
