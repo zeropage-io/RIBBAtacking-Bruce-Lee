@@ -1,6 +1,4 @@
-<div style='float:right'>
-[![RIBB@TACKING Bruce Lee art project](http://zeropage.io/wp-content/uploads/bruce-lee-voxel-on-wall-1-300x300.jpg)](http://zeropage.io/ribbatacking-bruce-lee-c64-game-tribute-bruce-lee-homage/)
-</div>
+<a href="http://zeropage.io/ribbatacking-bruce-lee-c64-game-tribute-bruce-lee-homage/"><img alt="RIBB@TACKING Bruce Lee art project" style="float:right" src="http://zeropage.io/wp-content/uploads/bruce-lee-voxel-on-wall-1-300x300.jpg" /></a>
 
 # RIBB@tacking-Bruce-Lee
 RIBB@TACKING Bruce Lee – a C64 game tribute and Bruce Lee homage
