@@ -1,8 +1,9 @@
 //
 // RIBB@TACKING Bruce Lee v1.0 - C64 game tribute and Bruce Lee homage
-// (c) 2016 Axel Dietrich <foobar@zeropage.io>
+// Copyright (C) 2016 Axel Dietrich <foobar@zeropage.io>
+// http://zeropage.io
 //
-// An IKEA Ribba frame with a 3D rendered voxel picture from the C64 Game "Bruce
+// An IKEA Ribba frame with a 3D rendered voxel picture from the C64 game "Bruce
 // Lee" and some cookoo's clock bells'n'whistles on the flipside.
 // http://zeropage.io/ribbatacking-bruce-lee-c64-game-tribute-bruce-lee-homage/
 // https://www.youtube.com/watch?v=-i-FtUF5Uvc
@@ -10,6 +11,16 @@
 // Ein Ikea RIBBA Rahmen Kunstprojekt mit 3D Voxel Bild des C64 Spieleklassikers
 // "Bruce Lee" und einigem Arduino-Elektronik-Firlefanz für einen huldvollen
 // Kuckusuhr-Effekt.
+//
+// This program is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option)
+// any later version. This program is distributed in the hope that it will be
+// useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+// Public License for more details. You should have received a copy of the GNU
+// General Public License along with this program (file LICENSE). If not, see
+// <http://www.gnu.org/licenses/>.
 //
 #include <SD.h>
 #include <TMRpcm.h>          // https://github.com/TMRh20/TMRpcm
