@@ -25,7 +25,7 @@
 #include <SD.h>
 #include <TMRpcm.h>          // https://github.com/TMRh20/TMRpcm
 #include <SPI.h>
-#include <Streaming.h>
+#include <Streaming.h>       // http://arduiniana.org/libraries/streaming/
 #include <ADCTouch.h>        // http://playground.arduino.cc/Code/ADCTouch
 #include <DS3232RTC.h>       // http://github.com/JChristensen/DS3232RTC
 #include <Time.h>            // http://playground.arduino.cc/Code/Time
