@@ -22,6 +22,15 @@
 // General Public License along with this program (file LICENSE). If not, see
 // <http://www.gnu.org/licenses/>.
 //
+// History
+// 1.1, 09.08.2016
+//   - comparison bug in loop() with ho and hoDST. fixed.
+//   - lastHour computation in startup() did not respect DST. fixed.
+//   - time and date shown in serial monitor did not respect DST. fixed.
+//   - removed unnecessary 2nd touch wire variable (gtouchRef1)
+// 1.0, 15.02.2016
+//   - initial release
+//
 #include <SD.h>
 #include <TMRpcm.h>          // https://github.com/TMRh20/TMRpcm
 #include <SPI.h>
@@ -33,13 +42,12 @@
 #define SD_CHIP_SELECT_PIN   4
 #define SPEAKER_PIN          9
 #define SENSOR_PIN1          A1
-#define SENSOR_PIN2          A2
 #define BIGBEN_START         8   // Bells'n'Whistles only from 8am
 #define BIGBEN_END           19  // till 7pm
 #define DEBUG                0
 
 TMRpcm tmrpcm;
-uint16_t gTouchRef0, gTouchRef1;
+uint16_t gTouchRef0;
 char *gWaveFiles[ ]   = {
   "bruc0116.wav", // Title song
   "bruc0316.wav", // The sumo Yamo is calling
@@ -55,7 +63,8 @@ char *gWaveFiles[ ]   = {
   "bruc1416.wav", // Bruce electrocuted
   "bruc1516.wav", // erupting Geysir
   "bruc1616.wav", // Lantern collected
-  "kungfu16.wav"  // Carl Douglas' Kung Fu Fighting
+  "kungfu16.wav", // Carl Douglas' Kung Fu Fighting
+  "lego16.wav"    // Lego Movie title song "Hier ist alles super" :-)
 };
 byte gVolume       = 5; // vol 5 rendered best playback quality for my setup
 byte gCurrentTrack = 0;
@@ -64,7 +73,10 @@ bool gLoop         = 0;
 bool gStopped      = 0;
 bool gPaused       = 0;
 bool gAVRStarted   = 1;
-int  lastHour      = -1;
+int  lastHour;
+
+// forward declaration
+boolean fIsSummertime( byte y, byte month, byte day, byte hour, byte tzHours = 1 );
 
 void setup( ) {
 
@@ -93,11 +105,14 @@ void setup( ) {
 
   // Create reference values to account for the capacitance of our control wires.
   gTouchRef0 = ADCTouch.read( SENSOR_PIN1, 500 );
-  gTouchRef1 = ADCTouch.read( SENSOR_PIN2, 500 );
-
+  
   // Set lastHour to current hour on boot.
-  time_t t = now( );
-  lastHour = hour( t );
+  time_t   t  = now( );
+  byte     ho = hour ( t );
+  byte     da = day  ( t );
+  byte     mo = month( t );
+  uint16_t ye = year ( t );
+  lastHour = hour( t ) + (fIsSummertime(ye,mo,da,ho)?1:0);
 
   // Welcome to the pleasure dome!
   Serial << F( "Welcome to RIBB@TACKING Bruce Lee v1.0" ) << endl;
@@ -136,7 +151,7 @@ void fShowTracks( ) {
 // input parameters: "normal time" for year, month, day, hour and tzHours (0=UTC, 1=MEZ)
 // return value: returns true during Daylight Saving Time, false otherwise
 // Also bei einer auf Winterzeit laufenden Uhr mit tzHours=1 und bei einer auf Sommerzeit umgestellten Uhr mit tzHours=2.
-boolean fIsSummertime( byte y, byte month, byte day, byte hour, byte tzHours = 1 ) {
+boolean fIsSummertime( byte y, byte month, byte day, byte hour, byte tzHours ) {
   uint16_t year = 2000 + y;
   return (month>3 && month<10)
       || (month== 3 && (hour + 24 * day)>=(1 + tzHours + 24*(31 - (5 * year /4 + 4) % 7)) )
@@ -161,13 +176,14 @@ void fSetRTC( byte year /*two digits*/, byte month, byte day, byte hour, byte mi
 //
 // Show the current time and date with info about summer-/wintertime
 void fShowTimeAndDate( ) {
-  time_t    t = now  (   );
-  byte     ho = hour ( t );
-  byte     da = day  ( t );
-  byte     mo = month( t );
-  uint16_t ye = year ( t );
-  Serial << ho << ":" << minute( t ) << " " << da << "." << mo << "." << ye;
-  Serial << " (" << (fIsSummertime(ye,mo,da,ho)?"Summertime":"Wintertime") << ")" << endl;
+  time_t    t  = now  (   );
+  byte     ho  = hour ( t );
+  byte     da  = day  ( t );
+  byte     mo  = month( t );
+  uint16_t ye  = year ( t );
+  byte     dst = (fIsSummertime(ye,mo,da,ho)?1:0);
+  Serial << (ho+dst) << ":" << minute( t ) << " " << da << "." << mo << "." << ye;
+  Serial << " (" << (dst?"Summertime":"Wintertime") << ")" << endl;
 }
 
 void loop( ) {
@@ -178,10 +194,8 @@ void loop( ) {
 
   // Check if touch wires have been, eh, touched.
   int touchVal0 = ADCTouch.read( SENSOR_PIN1 );
-  int touchVal1 = ADCTouch.read( SENSOR_PIN2 );
   // Remove offset.
   touchVal0 -= gTouchRef0;
-  touchVal1 -= gTouchRef1;
   if ( touchVal0 > 40 && ++debounce > 5 ) {
     debounce = 0;
     if ( tmrpcm.isPlaying( ) )
@@ -209,13 +223,13 @@ void loop( ) {
         if ( mi != formerMi ) {
           formerMi = mi;
           // Are we on the hour?
-          if ( ho != lastHour ) {
+          if ( hoDST != lastHour ) {
             // We are on the hour.
-            lastHour = ho;
+            lastHour = hoDST;
             if ( hoDST==12 || hoDST==19 ) {
               // Title song at high noon and 7pm.
               repeat = 1;
-              waveIndex = 0;
+              waveIndex = 15; // Hier ist alles super! :-)
             } else {
               // Carl Douglas starts the hour
               tmrpcm.play( gWaveFiles[ 14 ] );
