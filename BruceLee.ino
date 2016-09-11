@@ -1,5 +1,5 @@
 //
-// RIBB@TACKING Bruce Lee v1.0 - C64 game tribute and Bruce Lee homage
+// RIBB@TACKING Bruce Lee v1.1 - C64 game tribute and Bruce Lee homage
 // Copyright (C) 2016 Axel Dietrich <foobar@zeropage.io>
 // http://zeropage.io
 //
